@@ -1,0 +1,51 @@
+
+plugins {
+    id 'scala'
+}
+
+configurations {
+    scalaCompilerPlugin
+}
+
+dependencies {
+    // Use Scala 2.11 in our library project
+    compile 'org.scala-lang:scala-library:2.12.6'
+    compile 'io.estatico:newtype_2.12:0.4.2'
+    scalaCompilerPlugin 'org.scalamacros:paradise_2.12.6:2.1.1'
+
+
+    // Use Scalatest for testing our library
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.scalatest:scalatest_2.12:3.0.5'
+
+    // Need scala-xml at test runtime
+    testRuntime 'org.scala-lang.modules:scala-xml_2.12:1.1.0'
+}
+
+
+repositories {
+    jcenter()
+}
+
+tasks.withType(ScalaCompile){
+    // Map plugin jars to -Xplugin parameter
+    List<String> parameters =
+    configurations.scalaCompilerPlugin.files.collect {
+        '-Xplugin:'+ it.absolutePath
+    }
+
+    // Add existing parameters
+    List<String> existingParameters = scalaCompileOptions.additionalParameters
+    if (existingParameters) {
+        parameters.addAll(existingParameters)
+    }
+
+    // Add whatever flags you typically add
+    parameters += [
+            '-language:implicitConversions',
+            '-language:higherKinds'
+    ]
+    
+    // Finally set the additionalParameters
+    scalaCompileOptions.additionalParameters = parameters
+}
