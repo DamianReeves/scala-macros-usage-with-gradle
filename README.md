@@ -83,6 +83,7 @@ dependencies {
 
 Okay, we now have the plugin available, but that’s not enough. Now we need to make the Scala compiler aware of the scalamacro.paradise plugin by adding it to the scalaCompileOptions of the ScalaCompile task.
 
+``` gradle
 tasks.withType(ScalaCompile){
     // Map plugin jars to -Xplugin parameter
     List<String> parameters =
@@ -105,6 +106,7 @@ tasks.withType(ScalaCompile){
     // Finally set the additionalParameters
     scalaCompileOptions.additionalParameters = parameters
 }
+```
 
 With this in place, you should now be able to use scala-newtype in anger with successful macro generation.
 
